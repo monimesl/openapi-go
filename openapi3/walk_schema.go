@@ -139,9 +139,8 @@ func (r *Reflector) WalkRequestJSONSchemas(
 }
 
 func provideFormDataSchemas(schema jsonschema.SchemaOrBool, cb openapi.JSONSchemaCallback) error {
-	for name, propertySchema := range schema.TypeObject.Properties {
-		propertySchema := propertySchema
-
+	for pair := schema.TypeObject.Properties.Oldest(); pair != nil; pair = pair.Next() {
+		name, propertySchema := pair.Key, pair.Value
 		if propertySchema.TypeObject != nil && len(schema.TypeObject.ExtraProperties) > 0 {
 			cp := *propertySchema.TypeObject
 			propertySchema.TypeObject = &cp

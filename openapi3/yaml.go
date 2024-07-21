@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-
+	yaml2 "github.com/goccy/go-yaml"
 	"gopkg.in/yaml.v2"
 )
 
@@ -34,15 +34,7 @@ func (s *Spec) MarshalYAML() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	var v orderedMap
-
-	err = json.Unmarshal(jsonData, &v)
-	if err != nil {
-		return nil, err
-	}
-
-	return yaml.Marshal(yaml.MapSlice(v))
+	return yaml2.JSONToYAML(jsonData)
 }
 
 type orderedMap []yaml.MapItem

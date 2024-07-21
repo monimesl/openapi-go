@@ -1,6 +1,7 @@
 package openapi3
 
 import (
+	orderedmap "github.com/wk8/go-ordered-map/v2"
 	"strings"
 
 	"github.com/swaggest/jsonschema-go"
@@ -146,8 +147,8 @@ func (s *SchemaOrRef) toJSONSchema(ctx toJSONSchemaContext) jsonschema.SchemaOrB
 	}
 
 	if ss.Properties != nil {
-		for propName, propSchema := range ss.Properties {
-			jso.WithPropertiesItem(propName, propSchema.toJSONSchema(ctx))
+		for pair := ss.Properties.Oldest(); pair != nil; pair = pair.Next() {
+			jso.WithPropertiesItem(pair.Key, pair.Value.toJSONSchema(ctx))
 		}
 	}
 
@@ -298,13 +299,15 @@ func (s *SchemaOrRef) FromJSONSchema(schema jsonschema.SchemaOrBool) {
 
 	os.Pattern = js.Pattern
 
-	if len(js.Properties) > 0 {
-		os.Properties = make(map[string]SchemaOrRef, len(js.Properties))
+	if js.Properties.Len() > 0 {
+		os.Properties = orderedmap.New[string, SchemaOrRef](
+			orderedmap.WithCapacity[string, SchemaOrRef](js.Properties.Len()),
+		)
 
-		for name, jsp := range js.Properties {
+		for pair := js.Properties.Oldest(); pair != nil; pair = pair.Next() {
 			osp := SchemaOrRef{}
-			osp.FromJSONSchema(jsp)
-			os.Properties[name] = osp
+			osp.FromJSONSchema(pair.Value)
+			os.Properties.Set(pair.Key, osp)
 		}
 	}
 
