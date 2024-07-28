@@ -34,7 +34,19 @@ func (s *Spec) MarshalYAML() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return yaml2.JSONToYAML(jsonData)
+	return jSONToYAML(jsonData)
+}
+
+func jSONToYAML(bytes []byte) ([]byte, error) {
+	var v interface{}
+	if err := yaml2.UnmarshalWithOptions(bytes, &v, yaml2.UseOrderedMap()); err != nil {
+		return nil, err
+	}
+	out, err := yaml2.MarshalWithOptions(v, yaml2.UseLiteralStyleIfMultiline(true))
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 type orderedMap []yaml.MapItem

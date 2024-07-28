@@ -2,8 +2,7 @@ package main
 
 import (
 	fmt "fmt"
-	"github.com/swaggest/openapi-go"
-	"github.com/swaggest/openapi-go/openapi3"
+	"github.com/monimesl/openapi-go/openapi3"
 	"log"
 	"net/http"
 	"time"
@@ -26,7 +25,7 @@ func main() {
 		Amount uint   `json:"amount"`
 		Items  []struct {
 			Count uint   `json:"count"`
-			Name  string `json:"name"`
+			Name  string `json:"name" description:"item name"`
 		} `json:"items"`
 		UpdatedAt time.Time `json:"updated_at"`
 	}
@@ -43,7 +42,7 @@ func main() {
 	handleError(err)
 
 	getOp.AddReqStructure(new(req))
-	getOp.AddRespStructure(new(resp), func(cu *openapi.ContentUnit) { cu.HTTPStatus = http.StatusOK })
+	//getOp.AddRespStructure(new(resp), func(cu *openapi.ContentUnit) { cu.HTTPStatus = http.StatusOK })
 
 	reflector.AddOperation(getOp)
 
