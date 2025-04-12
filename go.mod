@@ -5,7 +5,7 @@ go 1.18
 replace github.com/swaggest/jsonschema-go v0.3.72 => github.com/monimesl/jsonschema-go v0.0.1
 
 require (
-	github.com/bool64/dev v0.2.35
+	github.com/bool64/dev v0.2.39
 	github.com/goccy/go-yaml v1.12.0
 	github.com/stretchr/testify v1.8.2
 	github.com/swaggest/assertjson v1.9.0
